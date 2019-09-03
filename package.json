@@ -1,0 +1,25 @@
+{
+  "name": "trophyapp",
+  "version": "0.0.1",
+  "description": "An app to control a player's trophy system.",
+  "main": "./src/index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpcunha4/TrophyAPP.git"
+  },
+  "author": "João Paulo Cunha Ávila",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpcunha4/TrophyAPP/issues"
+  },
+  "homepage": "https://github.com/jpcunha4/TrophyAPP#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  }
+}
