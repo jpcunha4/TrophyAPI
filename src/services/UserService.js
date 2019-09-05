@@ -1,41 +1,47 @@
 const User = require('../models/User');
 const CollectedCoins = require('../models/CollectedCoins');
+const Deaths = require('../models/Deaths');
 const mongoose = require('mongoose');
 class UserService {
-  async getUserByID(userId) {
-    const result = await User.findById(userId);
-
-    return result;
+  getUserByID(userId) {
+    return User.findById(userId);
   }
 
-  async getUserByName(name) {
-    const result = await User.findOne({ name: name });
-
-    return result;
+  getUserByName(name) {
+    return User.findOne({ name: name });
   }
 
-  async createUser(name) {
-    const newUser = User.create({
+  createUser(name) {
+    return User.create({
       name,
     });
-
-    return newUser;
   }
 
-  async collectCoin(userId, value) {
-    await CollectedCoins.create({
+  collectCoin(userId, value) {
+    CollectedCoins.create({
       user_id: userId,
       value,
     });
   }
 
-  async getUserCoins(userId) {
-    const result = await CollectedCoins.aggregate([
+  getUserCoins(userId) {
+    return CollectedCoins.aggregate([
       { $match: { user_id: mongoose.Types.ObjectId(userId) } },
       { $group: { _id: '$user_id', coins: { $sum: '$value' } } },
     ]);
+  }
 
-    return result;
+  killPlayer(userId) {
+    Deaths.create({
+      user_id: userId,
+    });
+  }
+
+  countPlayerDeaths(userId) {
+    return Deaths.aggregate([
+      { $match: { user_id: mongoose.Types.ObjectId(userId) } },
+      { $group: { _id: '$user_id', deaths: { $sum: 1 } } },
+    ]);
   }
 }
 

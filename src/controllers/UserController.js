@@ -1,10 +1,11 @@
 const UserService = require('../services/UserService');
 const userService = new UserService();
 
-function userDTO(_id, name, collectedCoins) {
+function userDTO(_id, name, collectedCoins, deaths) {
   this._id = _id;
   this.name = name;
-  this.collectedCoins = collectedCoins;
+  this.collectedCoins = collectedCoins || 0;
+  this.deaths = deaths || 0;
 }
 class UserController {
   async createUser(req, res) {
@@ -41,9 +42,15 @@ class UserController {
       }
 
       const collectedCoins = await userService.getUserCoins(user._id);
+      const deaths = await userService.countPlayerDeaths(user._id);
 
       return res.send(
-        new userDTO(user._id, user.name, collectedCoins[0].coins),
+        new userDTO(
+          user._id,
+          user.name,
+          collectedCoins[0].coins,
+          deaths[0].deaths,
+        ),
       );
     } catch (err) {
       return res
@@ -64,9 +71,15 @@ class UserController {
       }
 
       const collectedCoins = await userService.getUserCoins(user._id);
+      const deaths = await userService.countPlayerDeaths(user._id);
 
       return res.send(
-        new userDTO(user._id, user.name, collectedCoins[0].coins),
+        new userDTO(
+          user._id,
+          user.name,
+          collectedCoins[0].coins,
+          deaths[0].deaths,
+        ),
       );
     } catch (err) {
       return res
@@ -90,6 +103,25 @@ class UserController {
       return res
         .status(500)
         .send({ error: 'Error while recording a coin collection!' });
+    }
+  }
+
+  async killPlayer(req, res) {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).send({ error: 'Insufficient information' });
+    }
+
+    try {
+      await userService.killPlayer(id);
+
+      return res.send('Player is dead.');
+    } catch (err) {
+      return res.status(500).send({
+        error: "Error while recording user's death",
+        detail: err.message,
+      });
     }
   }
 }
