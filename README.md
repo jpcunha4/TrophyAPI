@@ -4,24 +4,31 @@ This app is made to control a player's trophy system in a game.
 
 ## Database
 
-### Entities
+### Registers
 
 - User
-  - id
-- Collected_Coins
-  - id
-  - user_id
-- Monster
+
   - id
   - name
 
-### Relationships
+- Collected_Coins
+
+  - id
+  - user_id
+
+- Monster
+
+  - id
+  - name
 
 - Killed_monster
+
   - id
   - user_id
   - monster_id
+
 - Deaths
+
   - id
   - user_id
   - timestamp

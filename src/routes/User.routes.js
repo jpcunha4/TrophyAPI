@@ -3,7 +3,9 @@ const router = express.Router();
 
 const UserController = require('../controllers/UserController');
 
-router.get('/createUser/:name', UserController.createUser);
+router.post('/createUser/:name', UserController.createUser);
 router.get('/getUserById/:id', UserController.getUserById);
+router.get('/getUserByName/:name', UserController.getUserByName);
+router.post('/collectCoin', UserController.collectCoin);
 
 module.exports = router;
