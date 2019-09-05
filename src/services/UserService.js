@@ -23,11 +23,10 @@ class UserService {
   }
 
   async collectCoin(userId, value) {
-    const result = await CollectedCoins.create({
+    await CollectedCoins.create({
       user_id: userId,
       value,
     });
-    console.log(result);
   }
 
   async getUserCoins(userId) {

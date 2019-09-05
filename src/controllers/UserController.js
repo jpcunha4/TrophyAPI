@@ -40,7 +40,11 @@ class UserController {
         return res.status(401).send({ error: 'There is no user with this ID' });
       }
 
-      return res.send(user);
+      const collectedCoins = await userService.getUserCoins(user._id);
+
+      return res.send(
+        new userDTO(user._id, user.name, collectedCoins[0].coins),
+      );
     } catch (err) {
       return res
         .status(500)
@@ -60,8 +64,6 @@ class UserController {
       }
 
       const collectedCoins = await userService.getUserCoins(user._id);
-
-      // console.log({ ...user, coins: collectedCoins.pop().coins });
 
       return res.send(
         new userDTO(user._id, user.name, collectedCoins[0].coins),
