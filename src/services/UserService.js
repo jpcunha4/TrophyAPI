@@ -5,6 +5,10 @@ const CollectedCoins = require('../models/CollectedCoins');
 const Deaths = require('../models/Deaths');
 const KilledMonsters = require('../models/KilledMonsters');
 class UserService {
+  getAllUsers() {
+    return User.find();
+  }
+
   getUserByID(userId) {
     return User.findById(userId);
   }

@@ -4,7 +4,7 @@ This app is made to control a player's trophy system in a game.
 
 ## Database
 
-### Registers
+### Collections
 
 - User
 
