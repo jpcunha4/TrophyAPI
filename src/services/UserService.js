@@ -1,7 +1,9 @@
+const mongoose = require('mongoose');
+//MODELS
 const User = require('../models/User');
 const CollectedCoins = require('../models/CollectedCoins');
 const Deaths = require('../models/Deaths');
-const mongoose = require('mongoose');
+const KilledMonsters = require('../models/KilledMonsters');
 class UserService {
   getUserByID(userId) {
     return User.findById(userId);
@@ -31,16 +33,51 @@ class UserService {
     ]);
   }
 
-  killPlayer(userId) {
-    Deaths.create({
-      user_id: userId,
-    });
-  }
-
   countPlayerDeaths(userId) {
     return Deaths.aggregate([
       { $match: { user_id: mongoose.Types.ObjectId(userId) } },
       { $group: { _id: '$user_id', deaths: { $sum: 1 } } },
+    ]);
+  }
+
+  killMonster(userId, monsterId) {
+    KilledMonsters.create({
+      user_id: userId,
+      monster_id: monsterId,
+    });
+  }
+
+  getAllKilledMonsters(userId) {
+    return KilledMonsters.aggregate([
+      { $match: { user_id: mongoose.Types.ObjectId(userId) } },
+      {
+        $group: {
+          _id: '$monster_id',
+          amount: { $sum: 1 },
+        },
+      },
+      {
+        $lookup: {
+          from: 'monsters',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'monster',
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [{ $arrayElemAt: ['$monster', 0] }, '$$ROOT'],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          amount: 1,
+        },
+      },
     ]);
   }
 }

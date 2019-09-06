@@ -1,11 +1,12 @@
 const UserService = require('../services/UserService');
 const userService = new UserService();
 
-function userDTO(_id, name, collectedCoins, deaths) {
+function userDTO(_id, name, collectedCoins, deaths, killedMonsters) {
   this._id = _id;
   this.name = name;
   this.collectedCoins = collectedCoins || 0;
   this.deaths = deaths || 0;
+  this.killedMonsters = killedMonsters || [];
 }
 class UserController {
   async createUser(req, res) {
@@ -43,6 +44,7 @@ class UserController {
 
       const collectedCoins = await userService.getUserCoins(user._id);
       const deaths = await userService.countPlayerDeaths(user._id);
+      const killedMonsters = await userService.getAllKilledMonsters(user._id);
 
       return res.send(
         new userDTO(
@@ -50,6 +52,7 @@ class UserController {
           user.name,
           collectedCoins[0].coins,
           deaths[0].deaths,
+          killedMonsters,
         ),
       );
     } catch (err) {
@@ -72,6 +75,7 @@ class UserController {
 
       const collectedCoins = await userService.getUserCoins(user._id);
       const deaths = await userService.countPlayerDeaths(user._id);
+      const killedMonsters = await userService.getAllKilledMonsters(user._id);
 
       return res.send(
         new userDTO(
@@ -79,6 +83,7 @@ class UserController {
           user.name,
           collectedCoins[0].coins,
           deaths[0].deaths,
+          killedMonsters,
         ),
       );
     } catch (err) {
@@ -106,23 +111,24 @@ class UserController {
     }
   }
 
-  async killPlayer(req, res) {
-    const { id } = req.params;
+  async killMonster(req, res) {
+    const { userId, monsterId } = req.query;
 
-    if (!id) {
-      return res.status(400).send({ error: 'Insufficient information' });
+    if (!userId || !monsterId) {
+      return res.status(400).send({ error: 'Insuffincient information!' });
     }
 
     try {
-      await userService.killPlayer(id);
+      await userService.killMonster(userId, monsterId);
 
-      return res.send('Player is dead.');
+      return res.send('Monster killed!');
     } catch (err) {
       return res.status(500).send({
-        error: "Error while recording user's death",
+        error: "Error while recording a monster's death",
         detail: err.message,
       });
     }
   }
 }
+
 module.exports = new UserController();

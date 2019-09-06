@@ -2,7 +2,9 @@ var express = require('express');
 var app = express();
 const mongoose = require('mongoose');
 
+// ROUTES
 let userRoutes = require('./routes/User.routes');
+let monsterRoutes = require('./routes/Monster.routes');
 
 const dbAccessString = 'mongodb://localhost:27017/TrophyApp';
 
@@ -16,6 +18,7 @@ app.get('/', (_, res) => {
 });
 
 app.use('/user', userRoutes);
+app.use('/monster', monsterRoutes);
 
 app.listen(3000, () => {
   console.log('Server is online.');
